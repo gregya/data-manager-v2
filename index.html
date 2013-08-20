@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>DM v.2</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!-- Le styles -->
+        <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="assets/css/my.css" rel="stylesheet">
+       
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <!-- Le fav and touch icons -->
+        <link rel="shortcut icon" href="assets/ico/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+            
+        <!-- Una JQuery -->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        
+        <!-- Highcharts -->
+        <script type="text/javascript">
+            $(function () {
+            var Dchart;
+            $(document).ready(function() {
+            
+                var colors = Highcharts.getOptions().colors,
+                    categories = ['Successful Operations', 'Invalid IDs', 'Test Failed', 'Repeat Test', 'Out of Range'],
+                    name = 'test types',
+                    data = [{
+                            y: 55.11,
+                            color: colors[0],
+                            drilldown: {
+                                name: 'Locations',
+                                categories: ['Metro', 'Big City', 'Small town', 'Rural Clinic'],
+                                data: [10.85, 7.35, 33.06, 2.81],
+                                color: colors[0]
+                            }
+                        }, {
+                            y: 21.63,
+                            color: colors[1],
+                            drilldown: {
+                                name: 'Locations',
+                                categories: ['Metro', 'Big City', 'Small Town', 'Rural Clinic'],
+                                data: [3.83, 1.78, 10.12, 5.43],
+                                color: colors[1]
+                            }
+                        }, {
+                            y: 11.94,
+                            color: colors[2],
+                            drilldown: {
+                                name: 'Locations',
+                                categories: ['Metro', 'Big City', 'Small Town', 'Rural Clinic'],
+                                data: [2.43, 3.68, 2.91, 2.72],
+                                color: colors[2]
+                            }
+                        }, {
+                            y: 9.29,
+                            color: colors[3],
+                            drilldown: {
+                                name: 'Locations',
+                                categories: ['Metro', 'Big City', 'Small town', 'Rural Clinic'],
+                                data: [4.55, 1.56, 0.23, 0.60],
+                                color: colors[3]
+                            }
+                        }];
+            
+            
+                // Build the data arrays
+                var browserData = [];
+                var versionsData = [];
+                for (var i = 0; i < data.length; i++) {
+            
+                    // add browser data
+                    browserData.push({
+                        name: categories[i],
+                        y: data[i].y,
+                        color: data[i].color
+                    });
+            
+                    // add version data
+                    for (var j = 0; j < data[i].drilldown.data.length; j++) {
+                        var brightness = 0.2 - (j / data[i].drilldown.data.length) / 5 ;
+                        versionsData.push({
+                            name: data[i].drilldown.categories[j],
+                            y: data[i].drilldown.data[j],
+                            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+                        });
+                    }
+                }
+            
+                // Create the chart
+                Dchart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'donut-holder',
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Test Results Overview'
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Total'
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            shadow: false
+                        }
+                    },
+                    tooltip: {
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+                        }
+                    },
+                    series: [{
+                        name: 'Results',
+                        data: browserData,
+                        size: '60%',
+                        dataLabels: {
+                            formatter: function() {
+                                return this.y > 5 ? this.point.name : null;
+                            },
+                            color: 'white',
+                            distance: -30
+                        }
+                    }, {
+                        name: 'Locations',
+                        data: versionsData,
+                        innerSize: '60%',
+                        dataLabels: {
+                            formatter: function() {
+                                // display only if larger than 1
+                                return this.y > 1 ? '<b>'+ this.point.name +':</b> '+ this.y +'%'  : null;
+                            }
+                        }
+                    }]
+                });
+            });
+            
+        });
+        
+            $(function () {
+                var Lchart;
+                $(document).ready(function() {
+                    Lchart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'line-holder',
+                            type: 'line',
+                            //marginRight: 130,
+                            marginBottom: 25
+                        },
+                        title: {
+                            text: 'Alerts this Week',
+                            x: -20 //center
+                        },
+                        /*subtitle: {
+                            text: 'Source: WorldClimate.com',
+                            x: -20
+                        },*/
+                        xAxis: {
+                            categories: ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat',
+                                'Sun']
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Number of Alerts'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            formatter: function() {
+                                    return '<b>'+ this.series.name +'</b><br/>'+
+                                    this.x +': '+ this.y +'';
+                            }
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'top',
+                            x: -10,
+                            y: 100,
+                            borderWidth: 0
+                        },
+                        series: [{
+                            name: 'Test Results',
+                            data: [4, 5, 7, 1, 4, 5, 8]
+                        }, {
+                            name: 'Operators',
+                            data: [7, 4, 2, 4, 6, 7, 8]
+                        }, {
+                            name: 'QC',
+                            data: [1, 6, 4, 3, 6, 8, 9]
+                        }, {
+                            name: 'Devices',
+                            data: [4, 2, 1, 1, 4, 5, 1]
+                        }]
+                    });
+                });
+                
+            });
+		</script>
+         
+    </head>
+
+    <body>
+        
+        <script src="assets/js/highcharts.js"></script>
+        
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">Metro Healthcare Dashboard</a>
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="#">Dashboard</a></li>
+                            <li><a href="tests.html">Tests</a></li>
+                            <li><a href="alerts.html">Alerts</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <h1><small>Dashboard View</small></h1>
+            <div class="row">
+                <div class="span6">
+                    <h6>Test Results Overview</h6>
+                </div>
+                <div class="span6">
+                    <h6>Current Alerts</h6>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="span6">                  
+                    <div id="donut-holder"></div>
+                </div>
+                <div class="span6">                   
+                    <ul class="thumbnails">
+                      <li class="span1">
+                        <div class="thumbnail">
+                          <span class="alerts">3</span>
+                            <p class="alert-text">
+                                Test Results
+                            </p>
+                        </div>
+                      </li>
+                      <li class="span1">
+                        <div class="thumbnail">
+                          <span class="alerts">4</span>
+                            <p class="alert-text">
+                              Operators
+                            </p>
+                        </div>
+                      </li>
+                      <li class="span1">
+                        <div class="thumbnail">
+                          <span class="alerts">6</span>
+                            <p class="alert-text">
+                                QC
+                            </p>
+                        </div>
+                      </li>
+                      <li class="span1">
+                        <div class="thumbnail">
+                          <span class="alerts">1</span>
+                            <p class="alert-text">
+                                Devices
+                            </p>    
+                        </div>
+                      </li>
+                    </ul>
+                    <div id="line-holder">
+                        
+                    </div>
+                </div>
+            </div>
+            
+             <div class="navbar-fixed-bottom">
+                
+                    &copy; Big Metro Healthcare
+                
+             </div>
+
+        </div> <!-- /container -->
+
+        <!-- Le javascript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="assets/js/jquery.js"></script>
+        <script src="assets/js/bootstrap-transition.js"></script>
+        <script src="assets/js/bootstrap-alert.js"></script>
+        <script src="assets/js/bootstrap-modal.js"></script>
+        <script src="assets/js/bootstrap-dropdown.js"></script>
+        <script src="assets/js/bootstrap-scrollspy.js"></script>
+        <script src="assets/js/bootstrap-tab.js"></script>
+        <script src="assets/js/bootstrap-tooltip.js"></script>
+        <script src="assets/js/bootstrap-popover.js"></script>
+        <script src="assets/js/bootstrap-button.js"></script>
+        <script src="assets/js/bootstrap-collapse.js"></script>
+        <script src="assets/js/bootstrap-carousel.js"></script>
+        <script src="assets/js/bootstrap-typeahead.js"></script>
+
+    </body>
+</html>
